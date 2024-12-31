@@ -1,0 +1,157 @@
+1.#creating a database
+CREATE DATABASE MortgageApplications;
+2.#using the database
+USE MortgageApplications;
+
+3.#creating a table (Borrowers)
+CREATE TABLE Borrowers (
+    borrower_id INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Salary DECIMAL(12,2),
+    DateofBirth DATE 
+);
+
+#creating a table MORTGAGAEAPPLICATIONS
+CREATE TABLE MORTGAGEAPPLICATIONS (
+    application_id INT PRIMARY KEY,
+    borrower_id INT,
+    loan_amount DECIMAL(10, 2),
+    applicaton_date DATE,
+    property_value INT,
+    status VARCHAR(20),
+    FOREIGN KEY (borrower_id) REFERENCES Borrowers(borrower_id)
+);
+
+#CREATING A TABLE NAMED Payments
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY,
+    application_id INT,
+    payment_date DATE,
+    payment_amount DECIMAL(10, 2),
+    payment_method VARCHAR(50),
+    FOREIGN KEY (application_id) REFERENCES MORTGAGEAPPLICATIONS(application_id)
+);
+
+
+4.#describing tables
+DESC Borrowers;
+DESC MORTGAGEAPPLICATIONS;
+DESC Payments;
+
+
+5.INSERTING THE VALUES(INSERTION)
+INSERT INTO Borrowers (borrower_id, FirstName,LastName, Salary, DateofBirth) VALUES
+(20,'saroj','sigdel',40000,'2003-03-28),
+(21,'rahul','malla',50000,'2004-10-28),
+(22,'abhinav','paudel',20000,'2005-02-03'),
+(23,'roshan','nepal',40000,'2002-05-08'),
+(24,'prabal','lamichhane',60000,'2003-06-09'),
+(25,'saurav','sigdel,35000,'2004-11-07');
+
+INSERT INTO MORTGAGEAPPLICATIONS (application_id, borrower_id, loan_amount,application_date,property_value, status) VALUES
+(30,20,500000,7500000,'2022-11-22','Pending'),
+(31,21,2000000,5000000,'2018-02-19','Pending'),
+(32,22,1000000,4000000,'2020-09-08','Approved'),
+(33,23,5000000,10000000,'2017-08-07','Approved'),
+(34,24,500000,2000000,'2021-08-9','Pending'),
+(35,25,2500000,3750000,'2024-12-29','Pending');
+
+INSERT INTO Payments (payment_id, application_id, payment_date, payment_amount,payment_method) VALUES
+(40,30,'2024-12-20',500000,'CASH'),
+(41,31,'2022-2-19',1000000,'BANK TRANSFER'),
+(42,32,'2022-09-07',500000,'CASH'),
+(43,33,'2020-08-27',2500000,'CREDIT-CARD'),
+(44,34,'2023-08-09',250000,'ESEWA'),
+(45,35,'2027-12-28',2500000,'CASH');
+
+
+6.(SELECTION)
+SELECT * FROM Borrowers;
+SELECT * FROM MORTGAGEAPPLICATIONS;
+SELECT * FROM Payments;
+
+7.(PROJECTION)
+SELECT name, phone_number FROM Borrowers;
+SELECT loan_amount, loan_term FROM MORTGAGEAPPLICATIONS;
+SELECT payment_date, payment_amount FROM Payments;
+
+8.(INNER JOIN)
+SELECT t.borrower_id
+FROM MORTGAGEAPPLICATIONS t
+INNER JOIN Payments th ON t.application_id=th.application_id;
+
+9.(LEFT JOIN)
+SELECT t.borrower_id
+FROM MORTGAGEAPPLICATIONS t
+LEFT JOIN Payments th ON t.application_id=th.application_id;
+
+
+10.(RIGHT JOIN)
+SELECT t.borrower_id
+FROM MORTGAGEAPPLICATIONS t
+RIGHT JOIN Payments th ON t.application_id=th.application_id;
+
+11.#Normalization: It doesnot have any kind of script , we can find in the project. 1NF,2NF,3NF Normalization , we can see 
+the examples in the project.
+
+
+12.(TRANSACTION MANAGEMENT)
+START TRANSACTION;
+
+-- Transaction with error scenario
+INSERT INTO Payments (payment_id, application_id, payment_date, payment_amount) VALUES
+(2, 2, '2024-02-01', 3000.00); -- Assume foreign key violation for error scenario
+
+#Here, SET salary= salary-1000
+Where FirstName ='saroj'
+UPDATE Payments
+SET salary =salary+1000
+Where FirstName='nonexistent';
+Commit;
+
+#Transaction without rollback senario
+SET salary= salary-1000
+Where FirstName ='saroj'
+UPDATE Payments
+SET salary =salary+1000
+Where FirstName='Rahul';
+
+
+
+# Transaction with commit and rollback 
+declare exit handler for sqlexception
+begin
+rollback;
+select'transaction failed,rollback executed' as message;
+end;
+start transaction;
+update Borrowers set salary=salary-10000 where FirstName='saroj';
+
+update Borrowers set salary=salary+10000 where FirstName='Rahul';
+
+Commit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMMIT;
